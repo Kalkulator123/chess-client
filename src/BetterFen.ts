@@ -4,6 +4,7 @@ export abstract class BetterFen {
     
     private static readonly regexPattern: RegExp = /^[PBNRQKpbnrqk/1-8]+$/;
     private static _value: Unit[][] = this.parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+    // private static _value: Unit[][] = this.parseFenToArray("8/8/8/1R1p4/2B5/8/8/8 w - - 0 1");
     /*constructor(fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") {
         if (this.regexPattern.test(fen)) {
             this._value = this.parseFenToArray(fen);
