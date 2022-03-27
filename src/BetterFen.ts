@@ -38,6 +38,12 @@ export abstract class BetterFen {
         return value;
     }
 
+    public static nextMoveArray(x1:number, y1:number, x2:number, y2:number): Unit[][]{
+        let arr = this.value;
+        arr[x2][y2] = arr[x1][y1];
+        arr[x1][y1] = new Unit('-');
+        return arr;
+    }
     private static placeEmpty(n: number, arr: Unit[]): Unit[] {
         const unit = new Unit('-');
 
