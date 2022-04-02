@@ -233,8 +233,9 @@ export class PostionChecker{
 
     private legalityCheck(arr:{x:number,y:number}[], x:number, y:number): {x:number,y:number}[]{
         let arr2:{x:number,y:number}[] = [];
+       
         arr.forEach(element => {
-            let positionChecker = new PostionChecker(BetterFen.nextMoveArray(x, y, element.x, element.y), !this.isWhite)
+            let positionChecker = new PostionChecker(this.nextMoveArray(x, y, element.x, element.y), !this.isWhite)
             for(let i = 0;i<8;i++){
                 for(let j = 0; j<8;j++){
                     if(positionChecker.pos[i][j].team===this.ally && positionChecker.pos[i][j].type===UnitType.King){
@@ -244,5 +245,19 @@ export class PostionChecker{
             }
         });
         return arr2;
+    }
+
+    public nextMoveArray(x1:number, y1:number, x2:number, y2:number): Unit[][]{
+        let arr:Unit[][] = [];
+        for(let i = 0;i<8;i++){
+            let row: Unit[] = [];
+            for(let j = 0; j<8;j++){
+                row.push(BetterFen.value[i][j]);
+            }
+            arr.push(row);
+        }
+        arr[x2][y2] = arr[x1][y1];
+        arr[x1][y1] = new Unit('-');
+        return arr;
     }
 }

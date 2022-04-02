@@ -3,7 +3,7 @@ import { Unit, UnitType, UnitTeam } from "./Unit";
 export abstract class BetterFen {
     
     private static readonly regexPattern: RegExp = /^[PBNRQKpbnrqk/1-8]+$/;
-    private static _value: Unit[][] = this.parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+    private static _value: Unit[][] = this.parseFenToArray("rnbqkbnr/pppBpppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     // private static _value: Unit[][] = this.parseFenToArray("8/8/8/1R1p4/2B5/8/8/8 w - - 0 1");
     /*constructor(fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") {
         if (this.regexPattern.test(fen)) {
@@ -38,12 +38,6 @@ export abstract class BetterFen {
         return value;
     }
 
-    public static nextMoveArray(x1:number, y1:number, x2:number, y2:number): Unit[][]{
-        let arr = this.value;
-        arr[x2][y2] = arr[x1][y1];
-        arr[x1][y1] = new Unit('-');
-        return arr;
-    }
     private static placeEmpty(n: number, arr: Unit[]): Unit[] {
         const unit = new Unit('-');
 
