@@ -202,6 +202,41 @@ export class PostionChecker{
         if(x-1>0 && y+1<8){
             if(this.pos[x-1][y+1].team!==this.ally) arr.push({x: x-1, y: y+1});
         }
+        if(!this.isWhite){
+            if(x===4 && y===0 && this.pos[0][7].type===UnitType.Rook && this.pos[0][7].team===this.ally){
+                if(this.pos[x][y+1].team===UnitTeam.None && this.pos[x][y+2].team===UnitTeam.None){
+                    let positionChecker  = new PostionChecker(BetterFen.value, !this.isWhite);
+                    if(!this.isChecked(positionChecker, x, y) && !this.isChecked(positionChecker, x, y+1) && !this.isChecked(positionChecker, x, y+2)){
+                        //TODO dodać krótką roszadę
+                    }
+                }
+            }
+            if(x===4 && y===0 && this.pos[0][0].type===UnitType.Rook && this.pos[0][0].team===this.ally){
+                if(this.pos[x][y-1].team===UnitTeam.None && this.pos[x][y-2].team===UnitTeam.None && this.pos[x][y-3].team===UnitTeam.None){
+                    let positionChecker  = new PostionChecker(BetterFen.value, !this.isWhite);
+                    if(!this.isChecked(positionChecker, x, y) && !this.isChecked(positionChecker, x, y-1) && !this.isChecked(positionChecker, x, y-2) && !this.isChecked(positionChecker, x, y-2)){
+                        //TODO dodać długą roszadę
+                    }
+                }
+            }
+        }else{
+            if(x===4 && y===0 && this.pos[7][7].type===UnitType.Rook && this.pos[7][7].team===this.ally){
+                if(this.pos[x][y+1].team===UnitTeam.None && this.pos[x][y+2].team===UnitTeam.None){
+                    let positionChecker  = new PostionChecker(BetterFen.value, !this.isWhite);
+                    if(!this.isChecked(positionChecker, x, y) && !this.isChecked(positionChecker, x, y+1) && !this.isChecked(positionChecker, x, y+2)){
+                        //TODO dodać krótką roszadę
+                    }
+                }
+            }
+            if(x===4 && y===7 && this.pos[7][0].type===UnitType.Rook && this.pos[7][0].team===this.ally){
+                if(this.pos[x][y-1].team===UnitTeam.None && this.pos[x][y-2].team===UnitTeam.None && this.pos[x][y-3].team===UnitTeam.None){
+                    let positionChecker  = new PostionChecker(BetterFen.value, !this.isWhite);
+                    if(!this.isChecked(positionChecker, x, y) && !this.isChecked(positionChecker, x, y-1) && !this.isChecked(positionChecker, x, y-2) && !this.isChecked(positionChecker, x, y-2)){
+                        //TODO dodać długą roszadę
+                    }
+                }
+            }
+        }
         return arr;
     }
     private isChecked(postionChecker:PostionChecker,x:number, y:number): boolean{
