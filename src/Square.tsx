@@ -17,6 +17,7 @@ function onClick(id:number){
         
     }
 }
+
 function Square(props:any) {
     const color = (id:number, isBlack:boolean) => {
         const row:number = Math.floor((id-1)/8);

@@ -1,16 +1,19 @@
 import { BetterFen } from "./BetterFen";
 import { Unit, UnitTeam, UnitType } from "./Unit";
+
 export class PostionChecker{
     public pos:Unit[][] = [];
     public isWhite = false;
     private enemy:number = this.isWhite ? UnitTeam.Black : UnitTeam.White;
     private ally:number = this.isWhite ? UnitTeam.White : UnitTeam.Black;
+
     constructor(pos:Unit[][], isWhite:boolean){
         this.pos = pos;
         this.isWhite = isWhite;
         this.ally = this.isWhite ? UnitTeam.White : UnitTeam.Black;
         this.enemy = this.isWhite ? UnitTeam.Black : UnitTeam.White;
     }
+
     public checkMoves(x:number, y:number): {x:number, y:number}[]{
         switch(BetterFen.value[x][y].type){
             case UnitType.Pawn: return this.legalityCheck(this.pawnMoves(x, y), x, y);
@@ -20,8 +23,10 @@ export class PostionChecker{
             case UnitType.Queen: return this.legalityCheck(this.queenMoves(x, y), x, y);
             case UnitType.King: return this.legalityCheck(this.kingMoves(x, y), x, y);
         }
+        
         return this.knightMoves(x, y);
     }
+
     public pawnMoves(x:number, y:number): {x:number, y:number}[]{
         let arr:{x:number, y:number}[] = [];
         if(this.isWhite){
