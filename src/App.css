@@ -67,3 +67,8 @@
 	grid-template-rows: repeat(8, 12.5%);
 	grid-auto-flow: row;
 }
+
+
+.good {
+	background-color: green;
+}
