@@ -1,15 +1,12 @@
-import React from 'react';
 import './App.css';
-import Board from './Board';
-import { ServerChess} from './services/chess-server.service';
+import Chessboard from './components/Chessboard/Chessboard';
 
 function App() {
-
-  // let server = new ServerChess();
-  // server.updateGame("62725b7da1284a9bfce5ad18", "e2e4");
-
   return (
-    <Board/>
-  )
-  }
+    <div id="app">
+      <Chessboard/>
+    </div>
+  );
+}
+
 export default App;
