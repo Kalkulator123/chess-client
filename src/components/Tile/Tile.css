@@ -10,7 +10,7 @@
     height: 100px;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 80px;
+    background-size: 100px;
 }
 
 .tile .chess-piece:hover {
@@ -22,11 +22,11 @@
 }
 
 .black-tile {
-    background-color: #779556;
+    background-color: rgb(172, 138, 102);
 }
 
 .white-tile {
-    background-color: #ebecd0;
+    background-color: rgb(235, 217, 183);;
 }
 
 .tile img {
