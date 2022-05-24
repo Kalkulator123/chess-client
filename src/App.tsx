@@ -5,11 +5,17 @@ import { ServerChess} from './services/chess-server.service';
 
 function App() {
 
-  // let server = new ServerChess();
-  // server.updateGame("62725b7da1284a9bfce5ad18", "e2e4");
+
+  const db = new ServerChess();
+  db.getOne('62656a41ab792941c329a52c');
 
   return (
+    <div>
+      <button onClick={() => {
+        console.log("gg")
+      }}>ff</button>
     <Board/>
+    </div>
   )
   }
 export default App;
