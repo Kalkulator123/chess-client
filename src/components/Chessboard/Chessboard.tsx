@@ -353,15 +353,6 @@ export default function Chessboard() {
       >
         {board}
       </div>
-      <button onClick={()=>{
-          const updatedPieces = pieces.reduce((results, piece) => {
-            parseFenToArray(fen).forEach(element => {
-              results.push(element);
-            });
-            return results;
-          }, [] as Piece[]);
-          setPieces(updatedPieces);
-      }}></button>
     </>
   );
 }
