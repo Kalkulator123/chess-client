@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
 import Referee from "../../referee/Referee";
@@ -30,6 +30,17 @@ export default function Chessboard() {
   const chessboardRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const referee = new Referee();
+
+  useEffect(()=>{
+    const updatedPieces = pieces.reduce((results, piece) => {
+      parseFenToArray(fen).forEach(element => {
+        results.push(element);
+      });
+      return results;
+    }, [] as Piece[]);
+    setPieces(updatedPieces);
+  }, [fen]);
+
   function grabPiece(e: React.MouseEvent) {
     if(canMove){
       const element = e.target as HTMLElement;
@@ -251,7 +262,10 @@ export default function Chessboard() {
     }
   }
   server.getOne(gameId).then(function(result){
-    setFen(result);
+    if(fen!=result){
+      setFen(result);
+    }
+    
     // BetterFen.setFenByString(result)
     // const updatedPieces = pieces.reduce((results, piece) => {
     //   BetterFen.value.forEach(element => {
@@ -261,6 +275,7 @@ export default function Chessboard() {
     // }, [] as Piece[]);
     // setPieces(updatedPieces);
   });
+  
   function parseFenToArray(fen: string): Piece[] {
     let value: Piece[] = [];
     const fenrow = fen.split('/');
