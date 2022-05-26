@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
 import Referee from "../../referee/Referee";
+import { ServerChess} from '../../services/chess-server.service';
 import {
   VERTICAL_AXIS,
   HORIZONTAL_AXIS,
@@ -9,22 +10,26 @@ import {
   Piece,
   PieceType,
   TeamType,
-  initialBoardState,
   Position,
   samePosition,
 } from "../../Constants";
+import { BetterFen } from "../../BetterFen";
+import { Console } from "console";
 let canMove:boolean = true;
 let isWhite = true;
+let server = new ServerChess();
+let gameId:string = "62656968ecd2f2c6adcd33a8";
+
 export default function Chessboard() {
+  const [fen, setFen] = useState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
   const [grabPosition, setGrabPosition] = useState<Position>({ x: -1, y: -1 });
-  const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+  let [pieces, setPieces] = useState<Piece[]>(BetterFen.value);
+  const coorditatesList: Array<string> = ["a","b","c","d","e","f","g","h"];
   const chessboardRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const referee = new Referee();
-  
-
   function grabPiece(e: React.MouseEvent) {
     if(canMove){
       const element = e.target as HTMLElement;
@@ -37,7 +42,7 @@ export default function Chessboard() {
         const currentPiece = pieces.find((p) =>
           samePosition(p.position, { x: grabX, y: grabY })
         );
-        if((isWhite && currentPiece?.team==TeamType.OUR)||(!isWhite && currentPiece?.team==TeamType.OPPONENT)){
+        if((isWhite && currentPiece?.team===TeamType.OUR)||(!isWhite && currentPiece?.team===TeamType.OPPONENT)){
           setGrabPosition({ x: grabX, y: grabY });
   
           const x = e.clientX - GRID_SIZE / 2;
@@ -155,7 +160,7 @@ export default function Chessboard() {
               piece.enPassant =
                 Math.abs(grabPosition.y - y) === 2 &&
                 piece.type === PieceType.PAWN;
-                
+              server.updateGame(gameId, coorditatesList[piece.position.x]+(piece.position.y+1)+coorditatesList[x]+(y+1));
               piece.position.x = x;
               piece.position.y = y;
 
@@ -245,7 +250,75 @@ export default function Chessboard() {
       board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
     }
   }
+  server.getOne(gameId).then(function(result){
+    setFen(result);
+    // BetterFen.setFenByString(result)
+    // const updatedPieces = pieces.reduce((results, piece) => {
+    //   BetterFen.value.forEach(element => {
+    //     results.push(element);
+    //   });
+    //   return results;
+    // }, [] as Piece[]);
+    // setPieces(updatedPieces);
+  });
+  function parseFenToArray(fen: string): Piece[] {
+    let value: Piece[] = [];
+    const fenrow = fen.split('/');
 
+    for (let i = 0; i < fenrow.length; i++) {
+        for (let j = 0; j < fenrow[i].length; j++) {
+            let char: string = fenrow[i][j];
+
+            if (isNaN(parseInt(char))) {
+                let unit = {
+                    image: getImage(char),
+                    position: {
+                        x: j,
+                        y: 7-i,
+                    },
+                    type: getType(char),
+                    team: getTeam(char),
+                };
+                value.push(unit);
+                continue;
+            }
+
+        }
+    }
+    return value;
+  }
+    function getType(char:string):PieceType{
+      switch(char.toLowerCase()){
+          case "r": return PieceType.ROOK;
+          case "n": return PieceType.KNIGHT;
+          case "b": return PieceType.BISHOP;
+          case "q": return PieceType.QUEEN;
+          case "k": return PieceType.KING;
+          case "p": return PieceType.PAWN;
+      }
+      return PieceType.PAWN;
+  }
+  function getImage(char:string):string{
+      switch(char){
+          case "r": return `assets/images/rook_b.png`;
+          case "n": return `assets/images/knight_b.png`;
+          case "b": return `assets/images/bishop_b.png`;
+          case "q": return `assets/images/queen_b.png`;
+          case "k": return `assets/images/king_b.png`;
+          case "p": return `assets/images/pawn_b.png`;
+          case "R": return `assets/images/rook_w.png`;
+          case "N": return `assets/images/knight_w.png`;
+          case "B": return `assets/images/bishop_w.png`;
+          case "Q": return `assets/images/queen_w.png`;
+          case "K": return `assets/images/king_w.png`;
+          case "P": return `assets/images/pawn_w.png`;
+      }
+      return `assets/images/pawn_w.png`;
+  }
+  function getTeam(char:string):TeamType{
+      if(char===char.toUpperCase())return TeamType.OUR;
+      return TeamType.OPPONENT;
+  }
   return (
     <>
       <div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
@@ -265,6 +338,15 @@ export default function Chessboard() {
       >
         {board}
       </div>
+      <button onClick={()=>{
+          const updatedPieces = pieces.reduce((results, piece) => {
+            parseFenToArray(fen).forEach(element => {
+              results.push(element);
+            });
+            return results;
+          }, [] as Piece[]);
+          setPieces(updatedPieces);
+      }}></button>
     </>
   );
 }
