@@ -45,13 +45,6 @@ export default class Referee {
     return false;
   }
 
-  //TODO
-  //Pawn promotion!
-  //Prevent the king from moving into danger!
-  //Add castling!
-  //Add check!
-  //Add checkmate!
-  //Add stalemate!
   isValidMove(initialPosition: Position, desiredPosition: Position, type: PieceType, team: TeamType, boardState: Piece[]) {
     let validMove = false;
     switch (type) {

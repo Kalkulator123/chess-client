@@ -13,12 +13,10 @@ import {
 	Position,
 	samePosition,
 } from "../../Constants";
-import { BetterFen } from "../../BetterFen";
-import { Console } from "console";
+
 let canMove: boolean = true;
 let isWhite = true;
 let server = new ServerChess();
-// let gameId: string = "62656968ecd2f2c6adcd33a8";
 
 export default function Chessboard() {
 	const [gameId, setGameId] = useState("");
@@ -26,7 +24,7 @@ export default function Chessboard() {
 	const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
 	const [promotionPawn, setPromotionPawn] = useState<Piece>();
 	const [grabPosition, setGrabPosition] = useState<Position>({ x: -1, y: -1 });
-	let [pieces, setPieces] = useState<Piece[]>(BetterFen.value);
+	let [pieces, setPieces] = useState<Piece[]>(parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
 	const coorditatesList: Array<string> = [
 		"a",
 		"b",
@@ -44,27 +42,20 @@ export default function Chessboard() {
 	useEffect(() => {
 		server.getOne(gameId).then(function (result) {
 			if (fen != result) {
-				console.log(result);
 				setFen(result);
-			}
+			}else updateBoard();
 		});
 	}, [gameId]);
 	useEffect(() => {
+		updateBoard();
+	}, [fen]);
+
+	function updateBoard(){
 		canMove = true;
 		if (!fen) return;
 		const fenLocal = parseFenToArray(fen);
-		console.log("done2");
-		// const updatedPieces = pieces.reduce(results => {
-		// 	fenLocal.forEach(element => {
-		// 		console.log("results.push(element)");
-		// 		results.push(element);
-		// 		console.log("done 3");
-		// 	});
-		// 	return results;
-		// }, [] as Piece[]);
 		setPieces(fenLocal);
-	}, [fen]);
-
+	}
 	function grabPiece(e: React.MouseEvent) {
 		if (canMove) {
 			const element = e.target as HTMLElement;
@@ -107,28 +98,22 @@ export default function Chessboard() {
 			const y = e.clientY - 50;
 			activePiece.style.position = "absolute";
 
-			//If x is smaller than minimum amount
 			if (x < minX) {
 				activePiece.style.left = `${minX}px`;
 			}
-			//If x is bigger than maximum amount
 			else if (x > maxX) {
 				activePiece.style.left = `${maxX}px`;
 			}
-			//If x is in the constraints
 			else {
 				activePiece.style.left = `${x}px`;
 			}
 
-			//If y is smaller than minimum amount
 			if (y < minY) {
 				activePiece.style.top = `${minY}px`;
 			}
-			//If y is bigger than maximum amount
 			else if (y > maxY) {
 				activePiece.style.top = `${maxY}px`;
 			}
-			//If y is in the constraints
 			else {
 				activePiece.style.top = `${y}px`;
 			}
@@ -196,12 +181,9 @@ export default function Chessboard() {
 						valid = true;
 						setPieces(updatedPieces);
 					} else if (validMove) {
-						//UPDATES THE PIECE POSITION
-						//AND IF A PIECE IS ATTACKED, REMOVES IT
 						canMove = false;
 						const updatedPieces = pieces.reduce((results, piece) => {
 							if (samePosition(piece.position, grabPosition)) {
-								//SPECIAL MOVE
 								piece.enPassant =
 									Math.abs(grabPosition.y - y) === 2 &&
 									piece.type === PieceType.PAWN;
@@ -228,7 +210,6 @@ export default function Chessboard() {
 						valid = true;
 						setPieces(updatedPieces);
 					} else {
-						//RESETS THE PIECE POSITION
 						activePiece.style.position = "relative";
 						activePiece.style.removeProperty("top");
 						activePiece.style.removeProperty("left");
@@ -237,12 +218,10 @@ export default function Chessboard() {
 
 				setActivePiece(null);
 				if (currentPiece && valid) {
-					// console.log(move);
 					server.updateGame(gameId, move).then(function (result) {
 						if (fen != result) {
 							setFen(result);
-							// console.log("2");
-						}
+						}else updateBoard();
 					});
 					valid = false;
 				}
@@ -307,9 +286,7 @@ export default function Chessboard() {
 
 	function parseFenToArray(fen: string): Piece[] {
 		let value: Piece[] = [];
-		console.log(fen);
 		const fenrow = fen.split("/");
-		// r2qkbnr/ppp1pppp/2np4/5b2/1P6/8/P1PP1PPP/RNBQKBNR w KQkq - 1 5
 		for (let i = 0; i < fenrow.length; i++) {
 			let n: number = 0;
 			for (let j = 0; j < fenrow[i].length; j++) {
@@ -333,8 +310,6 @@ export default function Chessboard() {
 				}
 			}
 		}
-		console.log("done");
-		// console.log(value);
 		return value;
 	}
 	function getType(char: string): PieceType {
