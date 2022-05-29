@@ -23,7 +23,7 @@ export class ServerChess {
 			const options = {
 				method: "GET",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080//player",
+				url: "http://127.0.0.1:8080/player",
 			};
 
 			const response = await axios(options);
