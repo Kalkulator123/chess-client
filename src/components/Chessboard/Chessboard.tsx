@@ -40,7 +40,7 @@ export default function Chessboard() {
 	const referee = new Referee();
 
 	useEffect(() => {
-		server.getOne(gameId).then(function (result) {
+		server.getGame().then(function (result) {
 			if (fen != result) {
 				setFen(result);
 			}else updateBoard();
@@ -218,7 +218,7 @@ export default function Chessboard() {
 
 				setActivePiece(null);
 				if (currentPiece && valid) {
-					server.updateGame(gameId, move).then(function (result) {
+					server.makeMove(move).then(function (result) {
 						if (fen != result) {
 							setFen(result);
 						}else updateBoard();
@@ -394,7 +394,7 @@ export default function Chessboard() {
 			</div>
 			<button
 				onClick={() => {
-					server.createGame().then(result => {
+					server.createGame("white", "bot").then(result => {
 						setGameId(result);
 					});
 				}}></button>

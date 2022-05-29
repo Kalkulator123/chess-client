@@ -1,74 +1,139 @@
 const axios = require("axios");
+axios.defaults.withCredentials = true;
 
 export class ServerChess {
-	public getAll(): any {
-		axios
-			.get("http://localhost:8080/games/")
-			.then((res: any) => {
-				console.log(res.status);
-				console.log(res);
-			})
-			.catch((err: any) => {
-				console.log(err);
-			});
-	}
 
-	public async getOne(id: string): Promise<any> {
+	// public async getOne(id: string): Promise<any> {
+	// 	try {
+	// 		const options = {
+	// 			method: "GET",
+	// 			header: { "content-type": "application/x-www-form-urlencoded" },
+	// 			url: "http://127.0.0.1:8080/games/" + id,
+	// 		};
+
+	// 		const response = await axios(options);
+	// 		console.log(response);
+	// 		return response;
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 	}
+	// }
+	public async getPlayer(): Promise<any> {
 		try {
 			const options = {
 				method: "GET",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/games/" + id,
+				url: "http://127.0.0.1:8080//player",
 			};
 
 			const response = await axios(options);
 			console.log(response);
-			return response.data.fen;
+			return response;
 		} catch (e) {
 			console.log(e);
 		}
 	}
-
-	public async createGame(): Promise<any> {
+	
+	public async createPlayer(): Promise<any> {
 		try {
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/games/",
+				url: "http://127.0.0.1:8080/player/create",
 			};
 			const response = await axios(options);
 			console.log(response);
-			return response.data.fen;
+			return response;
+		} catch (e) {
+			console.log(e);
+		}
+	}
+	public async deletePlayer(): Promise<any> {
+		try {
+			const options = {
+				method: "POST",
+				header: { "content-type": "application/x-www-form-urlencoded" },
+				url: "http://127.0.0.1:8080/player/delete",
+			};
+			const response = await axios(options);
+			console.log(response);
+			return response;
+		} catch (e) {
+			console.log(e);
+		}
+	}
+	public async makeMove(move: string): Promise<any> {
+		try {
+			const options = {
+				method: "POST",
+				header: { "content-type": "application/x-www-form-urlencoded" },
+				url: "http://127.0.0.1:8080/move/" + move,
+			};
+
+			const response = await axios(options);
+			console.log(response);
+			return response;
 		} catch (e) {
 			console.log(e);
 		}
 	}
 
-	public async updateGame(id: string, move: string): Promise<any> {
+	public async createGame(yourTeam: string, botOrPlayer:string): Promise<any> {
 		try {
-			const body: any = {
-				move: move,
-			};
-
-			const data = Object.keys(body)
-				.map(key => `${key}=${encodeURIComponent(body[key])}`)
-				.join("&");
-
 			const options = {
-				method: "PUT",
+				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				data,
-				url: "http://127.0.0.1:8080/games/" + id,
+				url: "http://127.0.0.1:8080/game/create/" + yourTeam + "/" + botOrPlayer,
 			};
 
 			const response = await axios(options);
-			// if (response.status === 200) {
-			// 	console.log();
-
-			// 	return response.data.fen;
-			// }
 			console.log(response);
-			return response.data.fen;
+			return response;
+		} catch (e) {
+			console.log(e);
+		}
+	}
+	public async joinGame(id: string): Promise<any> {
+		try {
+			const options = {
+				method: "POST",
+				header: { "content-type": "application/x-www-form-urlencoded" },
+				url: "http://127.0.0.1:8080/game/join/" + id,
+			};
+
+			const response = await axios(options);
+			console.log(response);
+			return response;
+		} catch (e) {
+			console.log(e);
+		}
+	}
+	public async getGame(): Promise<any> {
+		try {
+			const options = {
+				method: "GET",
+				header: { "content-type": "application/x-www-form-urlencoded" },
+				url: "http://127.0.0.1:8080/game",
+			};
+
+			const response = await axios(options);
+			console.log(response);
+			return response;
+		} catch (e) {
+			console.log(e);
+		}
+	}
+	public async quitGame(): Promise<any> {
+		try {
+			const options = {
+				method: "POST",
+				header: { "content-type": "application/x-www-form-urlencoded" },
+				url: "http://127.0.0.1:8080/game/quit",
+			};
+
+			const response = await axios(options);
+			console.log(response);
+			return response;
 		} catch (e) {
 			console.log(e);
 		}
