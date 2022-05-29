@@ -22,6 +22,8 @@ let isWhite = true;
 let server = new ServerChess();
 
 export default function Chessboard() {
+	const [playerID, setPlayerID] = useState("");
+	const [gameID, setGameID] = useState("");
 	const [fen, setFen] = useState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 	const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
 	const [promotionPawn, setPromotionPawn] = useState<Piece>();
@@ -46,6 +48,9 @@ export default function Chessboard() {
 	useEffect(() => {
 		updateBoard();
 	}, [fen]);
+	useEffect(() => {
+		updateBoard();
+	}, [gameID]);
 
 	function updateBoard() {
 		if (!fen) return;
@@ -211,7 +216,7 @@ export default function Chessboard() {
 				setActivePiece(null);
 				if (currentPiece && valid) {
 					console.log(move + " 1 ");
-					server.makeMove(move).then(function (result) {
+					server.makeMove(move, playerID, gameID).then(function (result) {
 						// console.log(result);
 						if (fen != result) {
 							setFen(result);
@@ -358,9 +363,11 @@ export default function Chessboard() {
 	}
 	function gameCreate(player: string, color: string) {
 		server.createPlayer().then(function (result) {
-			server.createGame(color, player);
-			if (color === "black") isWhite = false;
-			canMove = true;
+			setPlayerID(result);
+			server.createGame(color, player, playerID).then(function (result1) {
+				setGameID(result1);
+				canMove = true;
+			});
 		});
 	}
 	return (
@@ -416,6 +423,12 @@ export default function Chessboard() {
 					gameCreate("player", "black");
 				}}>
 				player black
+			</button>
+			<button
+				onClick={() => {
+					console.log(gameID + "   " + playerID);
+				}}>
+				button
 			</button>
 		</>
 	);
