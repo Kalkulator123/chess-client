@@ -2,7 +2,6 @@ const axios = require("axios");
 axios.defaults.withCredentials = true;
 
 export class ServerChess {
-
 	// public async getOne(id: string): Promise<any> {
 	// 	try {
 	// 		const options = {
@@ -33,7 +32,7 @@ export class ServerChess {
 			console.log(e);
 		}
 	}
-	
+
 	public async createPlayer(): Promise<any> {
 		try {
 			const options = {
@@ -67,7 +66,8 @@ export class ServerChess {
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/move/" + move,
+				// url: "http://127.0.0.1:8080/move/" + move,
+				url: "http://127.0.0.1:8080/move/d2d3",
 			};
 
 			const response = await axios(options);
@@ -78,12 +78,14 @@ export class ServerChess {
 		}
 	}
 
-	public async createGame(yourTeam: string, botOrPlayer:string): Promise<any> {
+	public async createGame(yourTeam: string, botOrPlayer: string): Promise<any> {
 		try {
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/game/create/" + yourTeam + "/" + botOrPlayer,
+				url:
+					// "http://127.0.0.1:8080/game/create/" + yourTeam + "/" + botOrPlayer,
+					"http://127.0.0.1:8080/game/create/black/bot",
 			};
 
 			const response = await axios(options);

@@ -13,18 +13,22 @@ import {
 	Position,
 	samePosition,
 } from "../../Constants";
+import { isEmptyBindingElement, isEmptyStatement } from "typescript";
+import { exists } from "fs";
+import { stringify } from "querystring";
 
-let canMove: boolean = true;
+let canMove: boolean = false;
 let isWhite = true;
 let server = new ServerChess();
 
 export default function Chessboard() {
-	const [gameId, setGameId] = useState("");
 	const [fen, setFen] = useState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 	const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
 	const [promotionPawn, setPromotionPawn] = useState<Piece>();
 	const [grabPosition, setGrabPosition] = useState<Position>({ x: -1, y: -1 });
-	let [pieces, setPieces] = useState<Piece[]>(parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+	let [pieces, setPieces] = useState<Piece[]>(
+		parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+	);
 	const coorditatesList: Array<string> = [
 		"a",
 		"b",
@@ -40,18 +44,10 @@ export default function Chessboard() {
 	const referee = new Referee();
 
 	useEffect(() => {
-		server.getGame().then(function (result) {
-			if (fen != result) {
-				setFen(result);
-			}else updateBoard();
-		});
-	}, [gameId]);
-	useEffect(() => {
 		updateBoard();
 	}, [fen]);
 
-	function updateBoard(){
-		canMove = true;
+	function updateBoard() {
 		if (!fen) return;
 		const fenLocal = parseFenToArray(fen);
 		setPieces(fenLocal);
@@ -100,21 +96,17 @@ export default function Chessboard() {
 
 			if (x < minX) {
 				activePiece.style.left = `${minX}px`;
-			}
-			else if (x > maxX) {
+			} else if (x > maxX) {
 				activePiece.style.left = `${maxX}px`;
-			}
-			else {
+			} else {
 				activePiece.style.left = `${x}px`;
 			}
 
 			if (y < minY) {
 				activePiece.style.top = `${minY}px`;
-			}
-			else if (y > maxY) {
+			} else if (y > maxY) {
 				activePiece.style.top = `${maxY}px`;
-			}
-			else {
+			} else {
 				activePiece.style.top = `${y}px`;
 			}
 		}
@@ -218,10 +210,12 @@ export default function Chessboard() {
 
 				setActivePiece(null);
 				if (currentPiece && valid) {
+					console.log(move + " 1 ");
 					server.makeMove(move).then(function (result) {
+						// console.log(result);
 						if (fen != result) {
 							setFen(result);
-						}else updateBoard();
+						} else updateBoard();
 					});
 					valid = false;
 				}
@@ -362,6 +356,13 @@ export default function Chessboard() {
 		if (char === char.toUpperCase()) return TeamType.OUR;
 		return TeamType.OPPONENT;
 	}
+	function gameCreate(player: string, color: string) {
+		server.createPlayer().then(function (result) {
+			server.createGame(color, player);
+			if (color === "black") isWhite = false;
+			canMove = true;
+		});
+	}
 	return (
 		<>
 			<div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
@@ -394,10 +395,28 @@ export default function Chessboard() {
 			</div>
 			<button
 				onClick={() => {
-					server.createGame("white", "bot").then(result => {
-						setGameId(result);
-					});
-				}}></button>
+					gameCreate("bot", "white");
+				}}>
+				Bot white
+			</button>
+			<button
+				onClick={() => {
+					gameCreate("bot", "black");
+				}}>
+				Bot black
+			</button>
+			<button
+				onClick={() => {
+					gameCreate("player", "white");
+				}}>
+				player white
+			</button>
+			<button
+				onClick={() => {
+					gameCreate("player", "black");
+				}}>
+				player black
+			</button>
 		</>
 	);
 }
