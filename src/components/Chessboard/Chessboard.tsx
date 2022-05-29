@@ -215,7 +215,7 @@ export default function Chessboard() {
 
 				setActivePiece(null);
 				if (currentPiece && valid) {
-					console.log(move + " 1 ");
+					// console.log(move + " 1 ");
 					server.makeMove(move, playerID, gameID).then(function (result) {
 						// console.log(result);
 						if (fen != result) {

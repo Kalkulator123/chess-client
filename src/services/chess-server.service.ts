@@ -20,6 +20,7 @@ export class ServerChess {
 
 	public async makeMove(move: string, pID: string, gID: string): Promise<any> {
 		try {
+			console.log(pID + "   " + gID);
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
@@ -27,7 +28,7 @@ export class ServerChess {
 				// url: "http://127.0.0.1:8080/move/d2d3",
 				data: {
 					playerId: pID,
-					gameId: gID,
+					currentGame: gID,
 				},
 			};
 
@@ -57,7 +58,7 @@ export class ServerChess {
 			};
 
 			const response = await axios(options);
-			console.log(response);
+			// console.log(response);
 			return response.data.id;
 		} catch (e) {
 			console.log(e);
