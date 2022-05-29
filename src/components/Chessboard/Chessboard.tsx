@@ -47,15 +47,28 @@ export default function Chessboard() {
 
 	useEffect(() => {
 		updateBoard();
+		if(gameID!==""){
+			console.log(gameID);
+			server.getGame(gameID).then(function(result){
+				console.log(result);
+				if(result.status){
+					if(result.status=="white won") console.log("white won");
+					if(result.status=="black won") console.log("white won");
+				}
+			})
+		}
 	}, [fen]);
 	useEffect(() => {
 		updateBoard();
 	}, [gameID]);
 
 	function updateBoard() {
+		
+		
 		if (!fen) return;
 		const fenLocal = parseFenToArray(fen);
 		setPieces(fenLocal);
+		
 	}
 	function grabPiece(e: React.MouseEvent) {
 		if (canMove) {
@@ -215,9 +228,8 @@ export default function Chessboard() {
 
 				setActivePiece(null);
 				if (currentPiece && valid) {
-					// console.log(move + " 1 ");
 					server.makeMove(move, playerID, gameID).then(function (result) {
-						// console.log(result);
+						canMove=true;
 						if (fen != result) {
 							setFen(result);
 						} else updateBoard();
@@ -423,12 +435,6 @@ export default function Chessboard() {
 					gameCreate("player", "black");
 				}}>
 				player black
-			</button>
-			<button
-				onClick={() => {
-					console.log(gameID + "   " + playerID);
-				}}>
-				button
 			</button>
 		</>
 	);

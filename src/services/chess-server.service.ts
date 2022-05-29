@@ -20,7 +20,6 @@ export class ServerChess {
 
 	public async makeMove(move: string, pID: string, gID: string): Promise<any> {
 		try {
-			console.log(pID + "   " + gID);
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
@@ -34,7 +33,7 @@ export class ServerChess {
 
 			const response = await axios(options);
 			console.log(response);
-			return response;
+			return response.data.fen;
 		} catch (e) {
 			console.log(e);
 		}
@@ -81,17 +80,20 @@ export class ServerChess {
 		}
 	}
 
-	public async getGame(): Promise<any> {
+	public async getGame(gID: string): Promise<any> {
 		try {
 			const options = {
 				method: "GET",
 				header: { "content-type": "application/x-www-form-urlencoded" },
 				url: "http://127.0.0.1:8080/game",
+				data: {
+					currentGame: gID,
+				},
 			};
 
 			const response = await axios(options);
 			console.log(response);
-			return response;
+			return response.data;
 		} catch (e) {
 			console.log(e);
 		}
