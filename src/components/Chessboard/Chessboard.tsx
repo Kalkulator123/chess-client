@@ -47,19 +47,13 @@ export default function Chessboard() {
 
 	useEffect(() => {
 		updateBoard();
-		if(gameID!==""){
-			console.log(gameID);
-			server.getGame(gameID).then(function(result){
-				console.log(result);
-				if(result.status){
-					if(result.status=="white won") console.log("white won");
-					if(result.status=="black won") console.log("white won");
-				}
-			})
-		}
+		
 	}, [fen]);
 	useEffect(() => {
 		updateBoard();
+		// server.getGame(gameID).then(function(result){
+		// 	console.log(result+" a");
+		// });
 	}, [gameID]);
 
 	function updateBoard() {
@@ -231,8 +225,14 @@ export default function Chessboard() {
 					server.makeMove(move, playerID, gameID).then(function (result) {
 						canMove=true;
 						if (fen != result) {
-							setFen(result);
+							setFen(result.fen);
 						} else updateBoard();
+						console.log(gameID);
+						if(result.status){
+							canMove=false;
+							if(result.status=="white won") console.log("white won");
+							if(result.status=="black won") console.log("white won");
+						}
 					});
 					valid = false;
 				}
@@ -374,11 +374,17 @@ export default function Chessboard() {
 		return TeamType.OPPONENT;
 	}
 	function gameCreate(player: string, color: string) {
+		if(color==="black") isWhite = false;
 		server.createPlayer().then(function (result) {
 			setPlayerID(result);
 			server.createGame(color, player, playerID).then(function (result1) {
 				setGameID(result1);
 				canMove = true;
+				if(color="black"){
+					console.log(gameID);
+					
+				}
+				
 			});
 		});
 	}

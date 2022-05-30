@@ -33,7 +33,7 @@ export class ServerChess {
 
 			const response = await axios(options);
 			console.log(response);
-			return response.data.fen;
+			return response.data;
 		} catch (e) {
 			console.log(e);
 		}
@@ -85,9 +85,10 @@ export class ServerChess {
 			const options = {
 				method: "GET",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/game",
+				url: "http://127.0.0.1:8080/game/",
 				data: {
-					currentGame: gID,
+					abc: "def",
+					currentGame: "6294ca2bdccf23bcc1965843",
 				},
 			};
 
