@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { HtmlHTMLAttributes, useEffect, useRef, useState } from "react";
 import "./Board.css";
 import Tile from "./Tile";
 import Referee from "./References";
@@ -13,11 +13,13 @@ import {
 	Position,
 	samePosition,
 } from "./Constants";
+import { isNull } from "util";
 
 let canMove: boolean = false;
 let isWhite: boolean;
 let server = new ServerChess();
 let vsPlayer = true;
+let clicked = false;
 
 export default function Board() {
 	const [playerID, setPlayerID] = useState("");
@@ -44,6 +46,9 @@ export default function Board() {
 	const chessboardRef = useRef<HTMLDivElement>(null);
 	const modalRef = useRef<HTMLDivElement>(null);
 	const referee = new Referee();
+	const butonRef = useRef<HTMLDivElement>(null);
+	const whiteWin = useRef<HTMLDivElement>(null);
+	const blackWin = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		updateBoard();
@@ -244,10 +249,12 @@ export default function Board() {
 						if (result.status) {
 							if (result.status == "white won") {
 								console.log("white won");
+								whiteWin.current?.classList.remove("hidden");
 							}
 							if (result.status == "black won") {
 								canMove = false;
 								console.log("black won");
+								blackWin.current?.classList.remove("hidden");
 							}
 						}
 					});
@@ -405,10 +412,11 @@ export default function Board() {
 			server.createGame(color, player, result).then(function (result1) {
 				setGameID(result1);
 				canMove = true;
+				clicked = true;
+				butonRef.current?.classList.add("hideButtons");
 			});
 		});
 	}
-
 	return (
 		<>
 			<div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
@@ -431,6 +439,12 @@ export default function Board() {
 					/>
 				</div>
 			</div>
+			<div id="winner-tab-white" className="hidden" ref={whiteWin}>
+				White won!
+			</div>
+			<div id="winner-tab-black" className="hidden" ref={blackWin}>
+				Black won!
+			</div>
 			<div
 				onMouseMove={e => movePiece(e)}
 				onMouseDown={e => grabPiece(e)}
@@ -439,52 +453,60 @@ export default function Board() {
 				ref={chessboardRef}>
 				{board}
 			</div>
-			<button
-				onClick={() => {
-					vsPlayer = false;
-					gameCreate("bot", "white");
-				}}>
-				Zagraj białymi przeciwko komputerowi
-			</button>
-			<button
-				onClick={() => {
-					vsPlayer = false;
-					gameCreate("bot", "black");
-				}}>
-				Zagraj czarnymi przeciwko komputerowi
-			</button>
-			<button
-				onClick={() => {
-					vsPlayer = true;
-					gameCreate("player", "white");
-				}}>
-				Zagraj białymi przeciwko innemu graczowi
-			</button>
-			<button
-				onClick={() => {
-					vsPlayer = true;
-					gameCreate("player", "black");
-				}}>
-				Zagraj czarnymi przeciwko innemu graczowi
-			</button>
-			<input id="abc" onChange={handleChange}></input>
-			<button
-				id="join"
-				onClick={() => {
-					server.joinGame(formData);
-					setGameID(formData);
-					server.getGame(formData).then(function (result) {
-						if (result.whitePlayer === "") {
-							isWhite = true;
-							canMove = true;
-						} else {
-							isWhite = false;
-							canMove = false;
-						}
-					});
-				}}>
-				Dołącz do gry
-			</button>
+
+			<div id="buttonsGroup" ref={butonRef}>
+				<button
+					onClick={() => {
+						vsPlayer = false;
+						gameCreate("bot", "white");
+					}}>
+					Zagraj białymi przeciwko komputerowi
+				</button>
+				<br />
+				<button
+					onClick={() => {
+						vsPlayer = false;
+						gameCreate("bot", "black");
+					}}>
+					Zagraj czarnymi przeciwko komputerowi
+				</button>
+				<br />
+				<button
+					onClick={() => {
+						vsPlayer = true;
+						gameCreate("player", "white");
+					}}>
+					Zagraj białymi przeciwko innemu graczowi
+				</button>
+				<br />
+				<button
+					onClick={() => {
+						vsPlayer = true;
+						gameCreate("player", "black");
+					}}>
+					Zagraj czarnymi przeciwko innemu graczowi
+				</button>
+				<br />
+				<input id="abc" onChange={handleChange}></input>
+				<button
+					id="join"
+					onClick={() => {
+						server.joinGame(formData);
+						setGameID(formData);
+						server.getGame(formData).then(function (result) {
+							if (result.whitePlayer === "") {
+								isWhite = true;
+								canMove = true;
+							} else {
+								isWhite = false;
+								canMove = false;
+							}
+							butonRef.current?.classList.add("hideButtons");
+						});
+					}}>
+					Dołącz do gry
+				</button>
+			</div>
 
 			{gameID}
 		</>

@@ -1,3 +1,6 @@
+body {
+	background-color: #202020;
+}
 #chessboard {
 	display: grid;
 	grid-template-columns: repeat(8, 100px);
@@ -13,10 +16,6 @@
 	right: 0px;
 	bottom: 0px;
 	left: 0px;
-}
-
-#pawn-promotion-modal.hidden {
-	display: none;
 }
 
 #pawn-promotion-modal > .modal-body {
@@ -40,4 +39,48 @@
 #pawn-promotion-modal > .modal-body > img:hover {
 	background-color: rgba(255, 255, 255, 0.3);
 	cursor: pointer;
+}
+#buttonsGroup {
+	text-align: center;
+	margin-top: 10px;
+}
+#buttonsGroup button,
+#buttonsGroup input {
+	width: 100%;
+	padding: 5px;
+	background-color: wheat;
+	border: 2px black solid;
+	font-weight: bold;
+}
+#buttonsGroup input {
+	width: 98.2%;
+	background-color: whitesmoke;
+}
+.hideButtons {
+	display: none;
+}
+
+#winner-tab-black,
+#winner-tab-white {
+	top: calc(50% - 150px);
+	left: calc(50% - 400px);
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	height: 300px;
+	width: 800px;
+	background-color: rgba(127, 127, 127, 0.8);
+	position: absolute;
+	font-weight: bold;
+	font-size: 600%;
+}
+.hidden {
+	display: none;
+}
+#winner-tab-black.hidden,
+#winner-tab-white.hidden {
+	display: none;
+}
+*::-webkit-scrollbar {
+	display: none;
 }
