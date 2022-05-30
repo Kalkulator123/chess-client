@@ -28,7 +28,6 @@ export default function Board() {
 	const [grabPosition, setGrabPosition] = useState<Position>({ x: -1, y: -1 });
 	const [formData, setFormData] = useState("");
 
-
 	let [pieces, setPieces] = useState<Piece[]>(
 		parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
 	);
@@ -48,22 +47,22 @@ export default function Board() {
 
 	useEffect(() => {
 		updateBoard();
-		if(fen.indexOf("w")!==-1){
-			if(isWhite) canMove = true;
+		if (fen.indexOf("w") !== -1) {
+			if (isWhite) canMove = true;
 		}
-		if(fen.indexOf("w")===-1){
-			if(!isWhite) canMove = true;
+		if (fen.indexOf("w") === -1) {
+			if (!isWhite) canMove = true;
 		}
 	}, [fen]);
 	useEffect(() => {
 		updateBoard();
-		if(gameID!==""){
-			server.getGame(gameID).then(function(result){
+		if (gameID !== "") {
+			server.getGame(gameID).then(function (result) {
 				if (fen != result) {
 					setFen(result.fen);
 				} else updateBoard();
 			});
-			if(vsPlayer){
+			if (vsPlayer) {
 				setInterval(abc, 1000);
 			}
 		}
@@ -73,9 +72,8 @@ export default function Board() {
 		if (!fen) return;
 		const fenLocal = parseFenToArray(fen);
 		setPieces(fenLocal);
-		
 	}
-	function handleChange (e: React.ChangeEvent<HTMLInputElement>) {
+	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		setFormData(e.target.value);
 	}
 	function grabPiece(e: React.MouseEvent) {
@@ -239,19 +237,18 @@ export default function Board() {
 					server.makeMove(move, playerID, gameID).then(function (result) {
 						if (fen != result.fen) {
 							setFen(result.fen);
-						} else{
+						} else {
 							canMove = true;
 							updateBoard();
-						} 
-						if(result.status){
-							if(result.status=="white won") {
+						}
+						if (result.status) {
+							if (result.status == "white won") {
 								console.log("white won");
-								
 							}
-							if(result.status=="black won"){
-								canMove=false;
+							if (result.status == "black won") {
+								canMove = false;
 								console.log("black won");
-							} 
+							}
 						}
 					});
 					valid = false;
@@ -393,31 +390,28 @@ export default function Board() {
 		if (char === char.toUpperCase()) return TeamType.OUR;
 		return TeamType.OPPONENT;
 	}
-	function abc(){
-		server.getGame(gameID).then(function(result){
+	function abc() {
+		server.getGame(gameID).then(function (result) {
 			if (fen != result) {
 				setFen(result.fen);
 			} else updateBoard();
 		});
-	};
+	}
 	function gameCreate(player: string, color: string) {
-		if(color==="black") isWhite = false;
+		if (color === "black") isWhite = false;
 		else isWhite = true;
 		server.createPlayer().then(function (result) {
 			setPlayerID(result);
 			server.createGame(color, player, result).then(function (result1) {
 				setGameID(result1);
 				canMove = true;
-				
 			});
 		});
-		
 	}
-	
+
 	return (
 		<>
 			<div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
-				
 				<div className="modal-body">
 					<img
 						onClick={() => promotePawn(PieceType.ROOK)}
@@ -474,22 +468,25 @@ export default function Board() {
 				Zagraj czarnymi przeciwko innemu graczowi
 			</button>
 			<input id="abc" onChange={handleChange}></input>
-			<button id="join" onClick={()=>{
-				server.joinGame(formData);
-				setGameID(formData);
-				server.getGame(formData).then(function(result){
-					if(result.whitePlayer===""){
-						isWhite = true;
-						canMove = true;
-					}else{
-						isWhite = false;
-						canMove = false;
-					}
+			<button
+				id="join"
+				onClick={() => {
+					server.joinGame(formData);
+					setGameID(formData);
+					server.getGame(formData).then(function (result) {
+						if (result.whitePlayer === "") {
+							isWhite = true;
+							canMove = true;
+						} else {
+							isWhite = false;
+							canMove = false;
+						}
+					});
+				}}>
+				Dołącz do gry
+			</button>
 
-					
-				})}}>Dołącz do gry</button>
-				
-				{gameID}
+			{gameID}
 		</>
 	);
 }

@@ -3,7 +3,7 @@ import Board from "./Board";
 function App() {
 	return (
 		<div id="app">
-			<Board/>
+			<Board />
 		</div>
 	);
 }
