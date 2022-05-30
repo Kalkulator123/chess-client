@@ -3,12 +3,13 @@ import { pid } from "process";
 const axios = require("axios");
 
 export class ServerChess {
+	private serverUrl:string = "http://127.0.0.1:8080";
 	public async createPlayer(): Promise<any> {
 		try {
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/player/create",
+				url: this.serverUrl + "/player/create",
 			};
 			const response = await axios(options);
 			// console.log(response);
@@ -23,8 +24,7 @@ export class ServerChess {
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/move/" + move,
-				// url: "http://127.0.0.1:8080/move/d2d3",
+				url: this.serverUrl + "/move/" + move,
 				data: {
 					playerId: pID,
 					currentGame: gID,
@@ -32,7 +32,7 @@ export class ServerChess {
 			};
 
 			const response = await axios(options);
-			console.log(response);
+			//console.log(response);
 			return response.data;
 		} catch (e) {
 			console.log(e);
@@ -48,9 +48,7 @@ export class ServerChess {
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url:
-					"http://127.0.0.1:8080/game/create/" + yourTeam + "/" + botOrPlayer,
-				// "http://127.0.0.1:8080/game/create/black/bot",
+				url: this.serverUrl + "/game/create/" + yourTeam + "/" + botOrPlayer,
 				data: {
 					playerId: pID,
 				},
@@ -69,11 +67,11 @@ export class ServerChess {
 			const options = {
 				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/game/join/" + id,
+				url: this.serverUrl + "/game/join/" + id,
 			};
 
 			const response = await axios(options);
-			console.log(response);
+			//console.log(response);
 			return response;
 		} catch (e) {
 			console.log(e);
@@ -85,7 +83,7 @@ export class ServerChess {
 			const options = {
 				method: "GET",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: "http://127.0.0.1:8080/game/",
+				url: this.serverUrl + "/game/",
 				data: {
 					abc: "def",
 					currentGame: "6294ca2bdccf23bcc1965843",
@@ -93,7 +91,7 @@ export class ServerChess {
 			};
 
 			const response = await axios(options);
-			console.log(response);
+			//console.log(response);
 			return response.data;
 		} catch (e) {
 			console.log(e);

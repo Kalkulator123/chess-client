@@ -227,11 +227,15 @@ export default function Chessboard() {
 						if (fen != result) {
 							setFen(result.fen);
 						} else updateBoard();
-						console.log(gameID);
 						if(result.status){
-							canMove=false;
-							if(result.status=="white won") console.log("white won");
-							if(result.status=="black won") console.log("white won");
+							if(result.status=="white won") {
+								console.log("white won");
+								
+							}
+							if(result.status=="black won"){
+								canMove=false;
+								console.log("white won");
+							} 
 						}
 					});
 					valid = false;
@@ -380,11 +384,6 @@ export default function Chessboard() {
 			server.createGame(color, player, playerID).then(function (result1) {
 				setGameID(result1);
 				canMove = true;
-				if(color="black"){
-					console.log(gameID);
-					
-				}
-				
 			});
 		});
 	}
