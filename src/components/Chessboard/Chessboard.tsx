@@ -489,7 +489,6 @@ export default function Chessboard() {
 			</button>
 			<input id="abc" onChange={handleChange}></input>
 			<button onClick={()=>{
-				console.log(formData);
 				server.joinGame(formData);
 				setGameID(formData);
 				server.getGame(formData).then(function(result){
