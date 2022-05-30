@@ -3,7 +3,9 @@ import { pid } from "process";
 const axios = require("axios");
 
 export class ServerChess {
+
 	private serverUrl:string = "http://127.0.0.1:8080";
+
 	public async createPlayer(): Promise<any> {
 		try {
 			const options = {
@@ -12,7 +14,6 @@ export class ServerChess {
 				url: this.serverUrl + "/player/create",
 			};
 			const response = await axios(options);
-			console.log(response.data.playerId);
 			return response.data.playerId;
 		} catch (e) {
 			console.log(e);
@@ -32,18 +33,13 @@ export class ServerChess {
 			};
 
 			const response = await axios(options);
-			//console.log(response);
 			return response.data;
 		} catch (e) {
 			console.log(e);
 		}
 	}
 
-	public async createGame(
-		yourTeam: string,
-		botOrPlayer: string,
-		pID: string
-	): Promise<any> {
+	public async createGame(yourTeam: string,botOrPlayer: string,pID: string): Promise<any> {
 		try {
 			const options = {
 				method: "POST",
@@ -55,7 +51,6 @@ export class ServerChess {
 			};
 
 			const response = await axios(options);
-			// console.log(response);
 			return response.data.id;
 		} catch (e) {
 			console.log(e);
@@ -71,7 +66,6 @@ export class ServerChess {
 			};
 
 			const response = await axios(options);
-			//console.log(response);
 			return response;
 		} catch (e) {
 			console.log(e);
@@ -89,7 +83,6 @@ export class ServerChess {
 				},
 			};
 			const response = await axios(options);
-			//console.log(response);
 			return response.data;
 		} catch (e) {
 			console.log(e);

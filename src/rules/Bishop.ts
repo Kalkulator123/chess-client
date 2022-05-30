@@ -1,5 +1,5 @@
-import { Piece, Position, samePosition, TeamType } from "../../Constants";
-import { tileIsEmptyOrOccupiedByOpponent, tileIsOccupied } from "./GeneralRules";
+import { Piece, Position, samePosition, TeamType } from "../Constants";
+import { tileIsEmptyOrOccupiedByOpponent, tileIsOccupied } from "./General";
 
 export const bishopMove = (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean => {
     for(let i = 1; i < 8; i++) {

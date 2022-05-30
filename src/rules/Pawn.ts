@@ -1,5 +1,5 @@
-import { Piece, Position, TeamType } from "../../Constants";
-import { tileIsOccupied, tileIsOccupiedByOpponent } from "./GeneralRules";
+import { Piece, Position, TeamType } from "../Constants";
+import { tileIsOccupied, tileIsOccupiedByOpponent } from "./General";
 
 export const pawnMove = (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean => {
     const specialRow = team === TeamType.OUR ? 1 : 6;

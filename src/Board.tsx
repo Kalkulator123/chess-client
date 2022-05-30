@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import "./Chessboard.css";
-import Tile from "../Tile/Tile";
-import Referee from "../../referee/Referee";
-import { ServerChess } from "../../services/chess-server.service";
+import "./Board.css";
+import Tile from "./Tile";
+import Referee from "./References";
+import { ServerChess } from "./chess-server.service";
 import {
 	VERTICAL_AXIS,
 	HORIZONTAL_AXIS,
@@ -12,17 +12,14 @@ import {
 	TeamType,
 	Position,
 	samePosition,
-} from "../../Constants";
-import { isEmptyBindingElement, isEmptyStatement } from "typescript";
-import { exists } from "fs";
-import { stringify } from "querystring";
+} from "./Constants";
 
 let canMove: boolean = false;
 let isWhite: boolean;
 let server = new ServerChess();
 let vsPlayer = true;
 
-export default function Chessboard() {
+export default function Board() {
 	const [playerID, setPlayerID] = useState("");
 	const [gameID, setGameID] = useState("");
 	const [fen, setFen] = useState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
@@ -30,6 +27,7 @@ export default function Chessboard() {
 	const [promotionPawn, setPromotionPawn] = useState<Piece>();
 	const [grabPosition, setGrabPosition] = useState<Position>({ x: -1, y: -1 });
 	const [formData, setFormData] = useState("");
+
 
 	let [pieces, setPieces] = useState<Piece[]>(
 		parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
@@ -50,20 +48,16 @@ export default function Chessboard() {
 
 	useEffect(() => {
 		updateBoard();
-		console.log(fen);
 		if(fen.indexOf("w")!==-1){
-			console.log("black")
 			if(isWhite) canMove = true;
 		}
 		if(fen.indexOf("w")===-1){
-			console.log("iswhite: " + isWhite);
 			if(!isWhite) canMove = true;
 		}
 	}, [fen]);
 	useEffect(() => {
 		updateBoard();
 		if(gameID!==""){
-			console.log(gameID);
 			server.getGame(gameID).then(function(result){
 				if (fen != result) {
 					setFen(result.fen);
@@ -243,15 +237,6 @@ export default function Chessboard() {
 				setActivePiece(null);
 				if (currentPiece && valid) {
 					server.makeMove(move, playerID, gameID).then(function (result) {
-						// if(fen.indexOf("w")!==-1){
-						// 	console.log("black")
-						// 	if(isWhite) canMove = true;
-						// }
-						// if(fen.indexOf("w")===-1){
-						// 	console.log("white")
-						// 	if(!isWhite) canMove = true;
-						// }
-						
 						if (fen != result.fen) {
 							setFen(result.fen);
 						} else{
@@ -265,7 +250,7 @@ export default function Chessboard() {
 							}
 							if(result.status=="black won"){
 								canMove=false;
-								console.log("white won");
+								console.log("black won");
 							} 
 						}
 					});
@@ -432,6 +417,7 @@ export default function Chessboard() {
 	return (
 		<>
 			<div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
+				
 				<div className="modal-body">
 					<img
 						onClick={() => promotePawn(PieceType.ROOK)}
@@ -464,31 +450,31 @@ export default function Chessboard() {
 					vsPlayer = false;
 					gameCreate("bot", "white");
 				}}>
-				Bot white
+				Zagraj białymi przeciwko komputerowi
 			</button>
 			<button
 				onClick={() => {
 					vsPlayer = false;
 					gameCreate("bot", "black");
 				}}>
-				Bot black
+				Zagraj czarnymi przeciwko komputerowi
 			</button>
 			<button
 				onClick={() => {
 					vsPlayer = true;
 					gameCreate("player", "white");
 				}}>
-				player white
+				Zagraj białymi przeciwko innemu graczowi
 			</button>
 			<button
 				onClick={() => {
 					vsPlayer = true;
 					gameCreate("player", "black");
 				}}>
-				player black
+				Zagraj czarnymi przeciwko innemu graczowi
 			</button>
 			<input id="abc" onChange={handleChange}></input>
-			<button onClick={()=>{
+			<button id="join" onClick={()=>{
 				server.joinGame(formData);
 				setGameID(formData);
 				server.getGame(formData).then(function(result){
@@ -499,8 +485,11 @@ export default function Chessboard() {
 						isWhite = false;
 						canMove = false;
 					}
+
 					
-				})}}>Join Game</button>
+				})}}>Dołącz do gry</button>
+				
+				{gameID}
 		</>
 	);
 }

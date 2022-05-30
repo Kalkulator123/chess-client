@@ -3,7 +3,7 @@ import {
   TeamType,
   Piece,
   Position,
-} from "../Constants";
+} from "./Constants";
 
 import { 
   pawnMove, 

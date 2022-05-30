@@ -1,5 +1,5 @@
-import { Piece, Position, samePosition, TeamType } from "../../Constants";
-import { tileIsEmptyOrOccupiedByOpponent, tileIsOccupied } from "./GeneralRules";
+import { Piece, Position, samePosition, TeamType } from "../Constants";
+import { tileIsEmptyOrOccupiedByOpponent, tileIsOccupied } from "./General";
 
 export const rookMove = (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean => {
     if(initialPosition.x === desiredPosition.x) {
