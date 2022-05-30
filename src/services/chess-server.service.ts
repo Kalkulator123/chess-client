@@ -12,7 +12,7 @@ export class ServerChess {
 				url: this.serverUrl + "/player/create",
 			};
 			const response = await axios(options);
-			// console.log(response);
+			console.log(response.data.playerId);
 			return response.data.playerId;
 		} catch (e) {
 			console.log(e);
@@ -81,15 +81,13 @@ export class ServerChess {
 	public async getGame(gID: string): Promise<any> {
 		try {
 			const options = {
-				method: "GET",
+				method: "POST",
 				header: { "content-type": "application/x-www-form-urlencoded" },
-				url: this.serverUrl + "/game/",
+				url: this.serverUrl + "/move/",
 				data: {
-					abc: "def",
-					currentGame: "6294ca2bdccf23bcc1965843",
+					currentGame: gID,
 				},
 			};
-
 			const response = await axios(options);
 			//console.log(response);
 			return response.data;

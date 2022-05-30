@@ -18,8 +18,9 @@ import { exists } from "fs";
 import { stringify } from "querystring";
 
 let canMove: boolean = false;
-let isWhite = true;
+let isWhite: boolean;
 let server = new ServerChess();
+let vsPlayer = true;
 
 export default function Chessboard() {
 	const [playerID, setPlayerID] = useState("");
@@ -28,6 +29,8 @@ export default function Chessboard() {
 	const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
 	const [promotionPawn, setPromotionPawn] = useState<Piece>();
 	const [grabPosition, setGrabPosition] = useState<Position>({ x: -1, y: -1 });
+	const [formData, setFormData] = useState("");
+
 	let [pieces, setPieces] = useState<Piece[]>(
 		parseFenToArray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
 	);
@@ -47,22 +50,39 @@ export default function Chessboard() {
 
 	useEffect(() => {
 		updateBoard();
-		
+		console.log(fen);
+		if(fen.indexOf("w")!==-1){
+			console.log("black")
+			if(isWhite) canMove = true;
+		}
+		if(fen.indexOf("w")===-1){
+			console.log("iswhite: " + isWhite);
+			if(!isWhite) canMove = true;
+		}
 	}, [fen]);
 	useEffect(() => {
 		updateBoard();
-		// server.getGame(gameID).then(function(result){
-		// 	console.log(result+" a");
-		// });
+		if(gameID!==""){
+			console.log(gameID);
+			server.getGame(gameID).then(function(result){
+				if (fen != result) {
+					setFen(result.fen);
+				} else updateBoard();
+			});
+			if(vsPlayer){
+				setInterval(abc, 1000);
+			}
+		}
 	}, [gameID]);
 
 	function updateBoard() {
-		
-		
 		if (!fen) return;
 		const fenLocal = parseFenToArray(fen);
 		setPieces(fenLocal);
 		
+	}
+	function handleChange (e: React.ChangeEvent<HTMLInputElement>) {
+		setFormData(e.target.value);
 	}
 	function grabPiece(e: React.MouseEvent) {
 		if (canMove) {
@@ -223,10 +243,21 @@ export default function Chessboard() {
 				setActivePiece(null);
 				if (currentPiece && valid) {
 					server.makeMove(move, playerID, gameID).then(function (result) {
-						canMove=true;
-						if (fen != result) {
+						// if(fen.indexOf("w")!==-1){
+						// 	console.log("black")
+						// 	if(isWhite) canMove = true;
+						// }
+						// if(fen.indexOf("w")===-1){
+						// 	console.log("white")
+						// 	if(!isWhite) canMove = true;
+						// }
+						
+						if (fen != result.fen) {
 							setFen(result.fen);
-						} else updateBoard();
+						} else{
+							canMove = true;
+							updateBoard();
+						} 
 						if(result.status){
 							if(result.status=="white won") {
 								console.log("white won");
@@ -377,16 +408,27 @@ export default function Chessboard() {
 		if (char === char.toUpperCase()) return TeamType.OUR;
 		return TeamType.OPPONENT;
 	}
+	function abc(){
+		server.getGame(gameID).then(function(result){
+			if (fen != result) {
+				setFen(result.fen);
+			} else updateBoard();
+		});
+	};
 	function gameCreate(player: string, color: string) {
 		if(color==="black") isWhite = false;
+		else isWhite = true;
 		server.createPlayer().then(function (result) {
 			setPlayerID(result);
-			server.createGame(color, player, playerID).then(function (result1) {
+			server.createGame(color, player, result).then(function (result1) {
 				setGameID(result1);
 				canMove = true;
+				
 			});
 		});
+		
 	}
+	
 	return (
 		<>
 			<div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
@@ -419,28 +461,47 @@ export default function Chessboard() {
 			</div>
 			<button
 				onClick={() => {
+					vsPlayer = false;
 					gameCreate("bot", "white");
 				}}>
 				Bot white
 			</button>
 			<button
 				onClick={() => {
+					vsPlayer = false;
 					gameCreate("bot", "black");
 				}}>
 				Bot black
 			</button>
 			<button
 				onClick={() => {
+					vsPlayer = true;
 					gameCreate("player", "white");
 				}}>
 				player white
 			</button>
 			<button
 				onClick={() => {
+					vsPlayer = true;
 					gameCreate("player", "black");
 				}}>
 				player black
 			</button>
+			<input id="abc" onChange={handleChange}></input>
+			<button onClick={()=>{
+				console.log(formData);
+				server.joinGame(formData);
+				setGameID(formData);
+				server.getGame(formData).then(function(result){
+					if(result.whitePlayer===""){
+						isWhite = true;
+						canMove = true;
+					}else{
+						isWhite = false;
+						canMove = false;
+					}
+					
+				})}}>Join Game</button>
 		</>
 	);
 }
