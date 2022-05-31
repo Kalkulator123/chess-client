@@ -76,6 +76,7 @@ body {
 	position: absolute;
 	font-weight: bold;
 	font-size: 600%;
+	top: 150px;
 }
 #credits-box {
 	font-size: 300%;
@@ -103,24 +104,50 @@ body {
 	bottom: 0;
 	padding: 3px;
 	color: wheat;
-}
-.white-tile text {
-	color: black;
-	text-shadow: 1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff,
-		-1px -1px 0 #fff, 0px 1px 0 #fff, 0px -1px 0 #fff, -1px 0px 0 #fff,
-		1px 0px 0 #fff, 2px 2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff,
-		-2px -2px 0 #fff, 0px 2px 0 #fff, 0px -2px 0 #fff, -2px 0px 0 #fff,
-		2px 0px 0 #fff, 1px 2px 0 #fff, -1px 2px 0 #fff, 1px -2px 0 #fff,
-		-1px -2px 0 #fff, 2px 1px 0 #fff, -2px 1px 0 #fff, 2px -1px 0 #fff,
-		-2px -1px 0 #fff;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	position: absolute;
 }
 .black-tile text {
-	color: white;
-	text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000,
+	color: #eae9d2;
+	/* text-shadow: 1px 1px 0 wheat, -1px 1px 0 wheat, 1px -1px 0 wheat,
+		-1px -1px 0 wheat, 0px 1px 0 wheat, 0px -1px 0 wheat, -1px 0px 0 wheat,
+		1px 0px 0 wheat, 2px 2px 0 wheat, -2px 2px 0 wheat, 2px -2px 0 wheat,
+		-2px -2px 0 wheat, 0px 2px 0 wheat, 0px -2px 0 wheat, -2px 0px 0 wheat,
+		2px 0px 0 wheat, 1px 2px 0 wheat, -1px 2px 0 wheat, 1px -2px 0 wheat,
+		-1px -2px 0 wheat, 2px 1px 0 wheat, -2px 1px 0 wheat, 2px -1px 0 wheat,
+		-2px -1px 0 wheat; */
+}
+.white-tile text {
+	color: #4b7399;
+	/* text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000,
 		-1px -1px 0 #000, 0px 1px 0 #000, 0px -1px 0 #000, -1px 0px 0 #000,
 		1px 0px 0 #000, 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000,
 		-2px -2px 0 #000, 0px 2px 0 #000, 0px -2px 0 #000, -2px 0px 0 #000,
 		2px 0px 0 #000, 1px 2px 0 #000, -1px 2px 0 #000, 1px -2px 0 #000,
 		-1px -2px 0 #000, 2px 1px 0 #000, -2px 1px 0 #000, 2px -1px 0 #000,
-		-2px -1px 0 #000;
+		-2px -1px 0 #000; */
+}
+#chessboard.hidden {
+	visibility: hidden;
+}
+#creditsButton.hidden {
+	display: none;
+}
+.tile text.hidden {
+	display: none;
+}
+.tile.posFIX {
+	position: unset;
+}
+.positionForPieceFixed {
+	position: fixed !important;
+}
+.chess-piece-unset-pos {
+	position: unset !important;
+}
+.tile-unset-pos {
+	position: unset !important;
 }

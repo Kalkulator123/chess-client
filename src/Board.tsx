@@ -52,7 +52,9 @@ export default function Board() {
 	const blackWin = useRef<HTMLDivElement>(null);
 	const drawWin = useRef<HTMLDivElement>(null);
 	const creditsRef = useRef<HTMLDivElement>(null);
-
+	const creditsButtonRef = useRef<HTMLButtonElement>(null);
+	const textGameIdRef = useRef<SVGTextElement>(null);
+	const notationREF = useRef<SVGTextElement>(null);
 	useEffect(() => {
 		updateBoard();
 		if (fen.indexOf("w") !== -1) {
@@ -263,18 +265,64 @@ export default function Board() {
 				if (result.status == "white won") {
 					console.log("white won");
 					whiteWin.current?.classList.remove("hidden");
+					hideElementsOnEnd();
 				}
 				if (result.status == "black won") {
 					canMove = false;
 					console.log("black won");
 					blackWin.current?.classList.remove("hidden");
+					hideElementsOnEnd();
 				}
 				if (result.status == "draw") {
 					canMove = false;
 					console.log("draw");
 					drawWin.current?.classList.remove("hidden");
+					hideElementsOnEnd();
 				}
 			}
+		});
+	}
+	let collection = Array.from(document.getElementsByClassName("notationText"));
+	let collection2 = Array.from(
+		document.getElementsByClassName("positionForPieceFixed")
+	);
+	let collection3 = Array.from(document.getElementsByClassName("chess-piece"));
+	let collection4 = Array.from(document.getElementsByClassName("tile"));
+	function hideElementsOnEnd() {
+		collection = Array.from(document.getElementsByClassName("notationText"));
+		collection.forEach(element => {
+			element.classList.add("hidden");
+		});
+		collection2 = Array.from(
+			document.getElementsByClassName("positionForPieceFixed")
+		);
+		collection2.forEach(element => {
+			element.classList.remove("positionForPieceFixed");
+		});
+		collection3 = Array.from(document.getElementsByClassName("chess-piece"));
+		collection3.forEach(element => {
+			element.classList.add("chess-piece-unset-pos");
+		});
+		collection4 = Array.from(document.getElementsByClassName("tile"));
+		collection4.forEach(element => {
+			element.classList.add("tile-unset-pos");
+		});
+	}
+	function forShowUP() {
+		collection.forEach(element => {
+			element.classList.remove("hidden");
+		});
+
+		collection2.forEach(element => {
+			element.classList.add("positionForPieceFixed");
+		});
+
+		collection3.forEach(element => {
+			element.classList.remove("chess-piece-unset-pos");
+		});
+
+		collection4.forEach(element => {
+			element.classList.remove("tile-unset-pos");
 		});
 	}
 	function promotePawn(pieceType: PieceType) {
@@ -331,8 +379,10 @@ export default function Board() {
 			const number = j + i + 2;
 			const piece = pieces.find(p => samePosition(p.position, { x: i, y: j }));
 			let image = piece ? piece.image : undefined;
-			console.log(`${j},${i}`);
-			board.push(<Tile key1={`${j},${i}`} image={image} number={number} />);
+			let newJ = String.fromCharCode(i + 65);
+			board.push(
+				<Tile key1={`${newJ}${j + 1}`} image={image} number={number} />
+			);
 		}
 	}
 
@@ -533,18 +583,23 @@ export default function Board() {
 				</button>
 			</div>
 			<button
+				ref={creditsButtonRef}
 				id="creditsButton"
 				onClick={() => {
 					if (creditsRef.current?.classList.contains("hidden")) {
+						hideElementsOnEnd();
 						creditsRef.current?.classList.remove("hidden");
 					} else {
 						creditsRef.current?.classList.add("hidden");
+						forShowUP();
 					}
 				}}>
 				Autorzy
 			</button>
 
-			{gameID}
+			<text id="textGameId" ref={textGameIdRef}>
+				{gameID}
+			</text>
 		</div>
 	);
 }

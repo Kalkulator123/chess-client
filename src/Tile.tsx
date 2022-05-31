@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import "./Tile.css";
 
 interface Props {
@@ -13,9 +14,9 @@ export default function Tile({ key1, number, image }: Props) {
 				{image && (
 					<div
 						style={{ backgroundImage: `url(${image})` }}
-						className="chess-piece"></div>
+						className="chess-piece positionForPieceFixed"></div>
 				)}
-				<text>{key1}</text>
+				<text className="notationText">{key1}</text>
 			</div>
 		);
 	} else {
@@ -24,9 +25,9 @@ export default function Tile({ key1, number, image }: Props) {
 				{image && (
 					<div
 						style={{ backgroundImage: `url(${image})` }}
-						className="chess-piece"></div>
+						className="chess-piece positionForPieceFixed"></div>
 				)}
-				<text>{key1}</text>
+				<text className="notationText">{key1}</text>
 			</div>
 		);
 	}

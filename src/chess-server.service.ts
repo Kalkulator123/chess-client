@@ -3,7 +3,7 @@ import { pid } from "process";
 const axios = require("axios");
 
 export class ServerChess {
-	private serverUrl: string = "http://127.0.0.1:8080";
+	private serverUrl: string = "http://91.236.34.223:8080";
 
 	public async createPlayer(): Promise<any> {
 		try {
