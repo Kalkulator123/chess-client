@@ -3,9 +3,10 @@ import "./Tile.css";
 interface Props {
 	image?: string;
 	number: number;
+	key1: string;
 }
 
-export default function Tile({ number, image }: Props) {
+export default function Tile({ key1, number, image }: Props) {
 	if (number % 2 === 0) {
 		return (
 			<div className="tile black-tile">
@@ -14,6 +15,7 @@ export default function Tile({ number, image }: Props) {
 						style={{ backgroundImage: `url(${image})` }}
 						className="chess-piece"></div>
 				)}
+				<text>{key1}</text>
 			</div>
 		);
 	} else {
@@ -24,6 +26,7 @@ export default function Tile({ number, image }: Props) {
 						style={{ backgroundImage: `url(${image})` }}
 						className="chess-piece"></div>
 				)}
+				<text>{key1}</text>
 			</div>
 		);
 	}

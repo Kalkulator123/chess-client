@@ -331,8 +331,8 @@ export default function Board() {
 			const number = j + i + 2;
 			const piece = pieces.find(p => samePosition(p.position, { x: i, y: j }));
 			let image = piece ? piece.image : undefined;
-
-			board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
+			console.log(`${j},${i}`);
+			board.push(<Tile key1={`${j},${i}`} image={image} number={number} />);
 		}
 	}
 
