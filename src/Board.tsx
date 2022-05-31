@@ -19,7 +19,8 @@ let canMove: boolean = false;
 let isWhite: boolean;
 let server = new ServerChess();
 let vsPlayer = true;
-let clicked = false;
+let promocja: string = "";
+let lastMovePromotion: boolean = false;
 
 export default function Board() {
 	const [playerID, setPlayerID] = useState("");
@@ -49,6 +50,8 @@ export default function Board() {
 	const butonRef = useRef<HTMLDivElement>(null);
 	const whiteWin = useRef<HTMLDivElement>(null);
 	const blackWin = useRef<HTMLDivElement>(null);
+	const drawWin = useRef<HTMLDivElement>(null);
+	const creditsRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		updateBoard();
@@ -142,6 +145,7 @@ export default function Board() {
 	}
 
 	function dropPiece(e: React.MouseEvent) {
+		lastMovePromotion = false;
 		let valid: boolean = false;
 		let move: string = "";
 		if (canMove) {
@@ -216,6 +220,8 @@ export default function Board() {
 								if (y === promotionRow && piece.type === PieceType.PAWN) {
 									modalRef.current?.classList.remove("hidden");
 									setPromotionPawn(piece);
+									promocja = move;
+									lastMovePromotion = true;
 								}
 
 								results.push(piece);
@@ -238,32 +244,39 @@ export default function Board() {
 				}
 
 				setActivePiece(null);
-				if (currentPiece && valid) {
-					server.makeMove(move, playerID, gameID).then(function (result) {
-						if (fen != result.fen) {
-							setFen(result.fen);
-						} else {
-							canMove = true;
-							updateBoard();
-						}
-						if (result.status) {
-							if (result.status == "white won") {
-								console.log("white won");
-								whiteWin.current?.classList.remove("hidden");
-							}
-							if (result.status == "black won") {
-								canMove = false;
-								console.log("black won");
-								blackWin.current?.classList.remove("hidden");
-							}
-						}
-					});
+				if (currentPiece && valid && !lastMovePromotion) {
+					codeMove(move);
 					valid = false;
 				}
 			}
 		}
 	}
-
+	function codeMove(move: string) {
+		server.makeMove(move, playerID, gameID).then(function (result) {
+			if (fen != result.fen) {
+				setFen(result.fen);
+			} else {
+				canMove = true;
+				updateBoard();
+			}
+			if (result.status) {
+				if (result.status == "white won") {
+					console.log("white won");
+					whiteWin.current?.classList.remove("hidden");
+				}
+				if (result.status == "black won") {
+					canMove = false;
+					console.log("black won");
+					blackWin.current?.classList.remove("hidden");
+				}
+				if (result.status == "draw") {
+					canMove = false;
+					console.log("draw");
+					drawWin.current?.classList.remove("hidden");
+				}
+			}
+		});
+	}
 	function promotePawn(pieceType: PieceType) {
 		if (promotionPawn === undefined) {
 			return;
@@ -277,18 +290,22 @@ export default function Board() {
 				switch (pieceType) {
 					case PieceType.ROOK: {
 						image = "rook";
+						codeMove(promocja + "r");
 						break;
 					}
 					case PieceType.BISHOP: {
 						image = "bishop";
+						codeMove(promocja + "b");
 						break;
 					}
 					case PieceType.KNIGHT: {
 						image = "knight";
+						codeMove(promocja + "n");
 						break;
 					}
 					case PieceType.QUEEN: {
 						image = "queen";
+						codeMove(promocja + "q");
 						break;
 					}
 				}
@@ -412,13 +429,12 @@ export default function Board() {
 			server.createGame(color, player, result).then(function (result1) {
 				setGameID(result1);
 				canMove = true;
-				clicked = true;
 				butonRef.current?.classList.add("hideButtons");
 			});
 		});
 	}
 	return (
-		<>
+		<div>
 			<div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
 				<div className="modal-body">
 					<img
@@ -442,8 +458,17 @@ export default function Board() {
 			<div id="winner-tab-white" className="hidden" ref={whiteWin}>
 				White won!
 			</div>
+			<div id="winner-tab-draw" className="hidden" ref={drawWin}>
+				Draw!
+			</div>
 			<div id="winner-tab-black" className="hidden" ref={blackWin}>
 				Black won!
+			</div>
+			<div id="credits-box" className="hidden" ref={creditsRef}>
+				Autorzy:
+				<br /> Michał Majczek
+				<br /> Paweł Rozbejko
+				<br /> Natan Tylczyński
 			</div>
 			<div
 				onMouseMove={e => movePiece(e)}
@@ -507,8 +532,19 @@ export default function Board() {
 					Dołącz do gry
 				</button>
 			</div>
+			<button
+				id="creditsButton"
+				onClick={() => {
+					if (creditsRef.current?.classList.contains("hidden")) {
+						creditsRef.current?.classList.remove("hidden");
+					} else {
+						creditsRef.current?.classList.add("hidden");
+					}
+				}}>
+				Autorzy
+			</button>
 
 			{gameID}
-		</>
+		</div>
 	);
 }

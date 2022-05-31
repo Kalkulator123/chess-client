@@ -45,7 +45,8 @@ body {
 	margin-top: 10px;
 }
 #buttonsGroup button,
-#buttonsGroup input {
+#buttonsGroup input,
+#creditsButton {
 	width: 100%;
 	padding: 5px;
 	background-color: wheat;
@@ -61,7 +62,9 @@ body {
 }
 
 #winner-tab-black,
-#winner-tab-white {
+#winner-tab-white,
+#winner-tab-draw,
+#credits-box {
 	top: calc(50% - 150px);
 	left: calc(50% - 400px);
 	display: flex;
@@ -74,11 +77,16 @@ body {
 	font-weight: bold;
 	font-size: 600%;
 }
+#credits-box {
+	font-size: 300%;
+}
 .hidden {
 	display: none;
 }
 #winner-tab-black.hidden,
-#winner-tab-white.hidden {
+#winner-tab-white.hidden,
+#winner-tab-draw.hidden,
+#credits-box.hidden {
 	display: none;
 }
 *::-webkit-scrollbar {
