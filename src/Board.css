@@ -76,6 +76,7 @@ body {
 	position: absolute;
 	font-weight: bold;
 	font-size: 600%;
+	top: 150px;
 }
 #credits-box {
 	font-size: 300%;
@@ -91,4 +92,62 @@ body {
 }
 *::-webkit-scrollbar {
 	display: none;
+}
+.tile {
+	color: #202020;
+	display: block;
+	position: relative;
+}
+.tile text {
+	position: absolute;
+	font-weight: bold;
+	bottom: 0;
+	padding: 3px;
+	color: wheat;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	position: absolute;
+}
+.black-tile text {
+	color: #eae9d2;
+	/* text-shadow: 1px 1px 0 wheat, -1px 1px 0 wheat, 1px -1px 0 wheat,
+		-1px -1px 0 wheat, 0px 1px 0 wheat, 0px -1px 0 wheat, -1px 0px 0 wheat,
+		1px 0px 0 wheat, 2px 2px 0 wheat, -2px 2px 0 wheat, 2px -2px 0 wheat,
+		-2px -2px 0 wheat, 0px 2px 0 wheat, 0px -2px 0 wheat, -2px 0px 0 wheat,
+		2px 0px 0 wheat, 1px 2px 0 wheat, -1px 2px 0 wheat, 1px -2px 0 wheat,
+		-1px -2px 0 wheat, 2px 1px 0 wheat, -2px 1px 0 wheat, 2px -1px 0 wheat,
+		-2px -1px 0 wheat; */
+}
+.white-tile text {
+	color: #4b7399;
+	/* text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000,
+		-1px -1px 0 #000, 0px 1px 0 #000, 0px -1px 0 #000, -1px 0px 0 #000,
+		1px 0px 0 #000, 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000,
+		-2px -2px 0 #000, 0px 2px 0 #000, 0px -2px 0 #000, -2px 0px 0 #000,
+		2px 0px 0 #000, 1px 2px 0 #000, -1px 2px 0 #000, 1px -2px 0 #000,
+		-1px -2px 0 #000, 2px 1px 0 #000, -2px 1px 0 #000, 2px -1px 0 #000,
+		-2px -1px 0 #000; */
+}
+#chessboard.hidden {
+	visibility: hidden;
+}
+#creditsButton.hidden {
+	display: none;
+}
+.tile text.hidden {
+	display: none;
+}
+.tile.posFIX {
+	position: unset;
+}
+.positionForPieceFixed {
+	position: fixed !important;
+}
+.chess-piece-unset-pos {
+	position: unset !important;
+}
+.tile-unset-pos {
+	position: unset !important;
 }
